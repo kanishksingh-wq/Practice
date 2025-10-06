@@ -1,0 +1,52 @@
+# Default configuration for fraud detection pipeline
+seed: 42
+paths:
+  data_csv: null               # path to existing CSV; if null, synthetic data will be generated
+  artifacts_dir: artifacts
+  logs_dir: logs
+  mlflow_tracking_uri: mlruns  # local MLflow directory
+
+schema:
+  label: is_fraud
+  id_col: transaction_id
+  user_id_col: user_id
+  timestamp_col: timestamp
+  cat_cols: [merchant_category, device_id, merchant_id, country, device_type]
+  num_cols: [amount, account_age_days, device_trust_score]
+  geo_cols: [country, device_country]
+
+split:
+  strategy: temporal
+  train_frac: 0.7
+  val_frac: 0.15
+  test_frac: 0.15
+
+imbalance:
+  method: class_weight         # options: class_weight, smote, adasyn, none
+  smote_k_neighbors: 5
+
+features:
+  velocity_windows_minutes: [60, 1440, 10080]   # 1h, 1d, 7d
+  session_gap_minutes: 30
+  target_encoding: true
+  frequency_encoding: true
+
+models:
+  families: [lightgbm, xgboost, catboost, mlp]
+  optuna_trials: 20
+  n_splits_time_groups: 3      # for time-aware CV
+
+thresholding:
+  optimize_metric: f1
+  beta: 1.0
+
+costs:
+  false_positive: 1
+  false_negative: 25
+
+shap:
+  sample_size: 5000
+
+monitoring:
+  psi_bins: 10
+  drift_reference: train

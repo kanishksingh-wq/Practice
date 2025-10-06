@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Data & Artifacts
+artifacts/
+data/raw/
+data/interim/
+mlruns/
+
+# Logs
+logs/
